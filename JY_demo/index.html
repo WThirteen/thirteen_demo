@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蓝盾学堂 · 新《监狱法》趣味学习平台</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Microsoft YaHei","PingFang SC",sans-serif; background:#f0f4f8; color:#1a2b4a; }
+  
+  /* 顶部导航 */
+  .header { background:linear-gradient(135deg,#0a2540 0%,#1e3a5f 100%); color:#fff; padding:15px 30px; box-shadow:0 2px 10px rgba(0,0,0,0.2); position:sticky; top:0; z-index:100; }
+  .header-inner { display:flex; align-items:center; justify-content:space-between; max-width:1400px; margin:0 auto; }
+  .logo { display:flex; align-items:center; gap:12px; font-size:22px; font-weight:bold; }
+  .logo-icon { width:40px; height:40px; background:linear-gradient(135deg,#d4af37,#f4d03f); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+  .nav { display:flex; gap:8px; }
+  .nav-btn { padding:8px 18px; background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:20px; cursor:pointer; transition:all 0.3s; font-size:14px; }
+  .nav-btn:hover, .nav-btn.active { background:#d4af37; color:#0a2540; border-color:#d4af37; font-weight:bold; }
+  .user-info { display:flex; align-items:center; gap:15px; font-size:14px; }
+  .score-badge { background:#d4af37; color:#0a2540; padding:5px 12px; border-radius:15px; font-weight:bold; }
+  
+  /* 主容器 */
+  .container { max-width:1400px; margin:20px auto; padding:0 20px; }
+  .page { display:none; animation:fadeIn 0.4s; }
+  .page.active { display:block; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+  
+  /* 首页 */
+  .welcome-banner { background:linear-gradient(135deg,#1e3a5f,#0a2540); color:#fff; padding:40px; border-radius:15px; margin-bottom:25px; position:relative; overflow:hidden; }
+  .welcome-banner::after { content:"⚖"; position:absolute; right:30px; top:50%; transform:translateY(-50%); font-size:150px; opacity:0.1; }
+  .welcome-banner h1 { font-size:28px; margin-bottom:10px; }
+  .welcome-banner p { opacity:0.9; margin-bottom:20px; }
+  .checkin-btn { background:#d4af37; color:#0a2540; border:none; padding:12px 30px; border-radius:25px; font-size:16px; font-weight:bold; cursor:pointer; transition:transform 0.2s; }
+  .checkin-btn:hover { transform:scale(1.05); }
+  .checkin-btn:disabled { background:#888; cursor:not-allowed; }
+  
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-bottom:25px; }
+  .stat-card { background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); border-left:4px solid #d4af37; }
+  .stat-card .label { color:#666; font-size:13px; margin-bottom:8px; }
+  .stat-card .value { font-size:28px; font-weight:bold; color:#0a2540; }
+  .stat-card .sub { font-size:12px; color:#888; margin-top:5px; }
+  
+  .module-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+  .module-card { background:#fff; padding:25px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); cursor:pointer; transition:all 0.3s; border-top:3px solid #1e3a5f; }
+  .module-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+  .module-icon { font-size:40px; margin-bottom:10px; }
+  .module-card h3 { color:#0a2540; margin-bottom:8px; }
+  .module-card p { color:#666; font-size:13px; line-height:1.6; }
+  
+  /* 问答闯关 */
+  .quiz-header { background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; }
+  .quiz-info { display:flex; gap:20px; flex-wrap:wrap; }
+  .quiz-info-item { display:flex; align-items:center; gap:8px; font-size:14px; }
+  .quiz-info-item .num { font-size:20px; font-weight:bold; color:#d4af37; }
+  
+  .quiz-card { background:#fff; padding:35px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+  .quiz-progress { height:6px; background:#e0e0e0; border-radius:3px; margin-bottom:25px; overflow:hidden; }
+  .quiz-progress-bar { height:100%; background:linear-gradient(90deg,#d4af37,#f4d03f); transition:width 0.3s; }
+  .quiz-question { font-size:18px; line-height:1.7; margin-bottom:25px; color:#0a2540; font-weight:500; }
+  .quiz-tag { display:inline-block; background:#e8f0fe; color:#1e3a5f; padding:3px 10px; border-radius:10px; font-size:12px; margin-bottom:10px; }
+  
+  .options { display:flex; flex-direction:column; gap:12px; }
+  .option { padding:15px 20px; border:2px solid #e0e0e0; border-radius:10px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:12px; }
+  .option:hover { border-color:#1e3a5f; background:#f8fafc; }
+  .option.selected { border-color:#1e3a5f; background:#e8f0fe; }
+  .option.correct { border-color:#2ecc71; background:#e8f8f0; }
+  .option.wrong { border-color:#e74c3c; background:#fdecea; }
+  .option-letter { width:30px; height:30px; border-radius:50%; background:#e0e0e0; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#555; flex-shrink:0; }
+  .option.selected .option-letter { background:#1e3a5f; color:#fff; }
+  .option.correct .option-letter { background:#2ecc71; color:#fff; }
+  .option.wrong .option-letter { background:#e74c3c; color:#fff; }
+  
+  .quiz-actions { margin-top:25px; display:flex; gap:10px; justify-content:flex-end; }
+  .btn { padding:10px 25px; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:bold; transition:all 0.2s; }
+  .btn-primary { background:#1e3a5f; color:#fff; }
+  .btn-primary:hover { background:#0a2540; }
+  .btn-gold { background:#d4af37; color:#0a2540; }
+  .btn-gold:hover { background:#b8941f; }
+  .btn:disabled { opacity:0.5; cursor:not-allowed; }
+  
+  .explanation { margin-top:20px; padding:15px; background:#fff8e1; border-left:4px solid #d4af37; border-radius:6px; display:none; }
+  .explanation.show { display:block; animation:fadeIn 0.3s; }
+  .explanation strong { color:#0a2540; }
+  
+  /* 新旧对比 */
+  .compare-controls { background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; display:flex; gap:15px; flex-wrap:wrap; align-items:center; }
+  .compare-controls select, .compare-controls input { padding:8px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; }
+  .compare-controls input { flex:1; min-width:200px; }
+  
+  .compare-container { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width:900px) { .compare-container { grid-template-columns:1fr; } }
+  .compare-panel { background:#fff; padding:25px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+  .compare-panel h3 { padding-bottom:12px; border-bottom:2px solid; margin-bottom:15px; font-size:18px; }
+  .compare-panel.old h3 { border-color:#e74c3c; color:#c0392b; }
+  .compare-panel.new h3 { border-color:#2ecc71; color:#27ae60; }
+  .compare-content { line-height:1.9; font-size:14px; }
+  .compare-content p { margin-bottom:12px; }
+  .highlight-add { background:#d4edda; padding:2px 4px; border-radius:3px; color:#155724; font-weight:500; }
+  .highlight-del { background:#f8d7da; padding:2px 4px; border-radius:3px; color:#721c24; text-decoration:line-through; }
+  .highlight-mod { background:#fff3cd; padding:2px 4px; border-radius:3px; color:#856404; font-weight:500; }
+  .change-tag { display:inline-block; font-size:11px; padding:2px 8px; border-radius:10px; margin-left:5px; font-weight:bold; }
+  .tag-add { background:#2ecc71; color:#fff; }
+  .tag-del { background:#e74c3c; color:#fff; }
+  .tag-mod { background:#f39c12; color:#fff; }
+  
+  .article-list { background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; }
+  .article-item { padding:12px 15px; border-left:3px solid #1e3a5f; margin-bottom:10px; cursor:pointer; transition:all 0.2s; border-radius:0 6px 6px 0; }
+  .article-item:hover { background:#f8fafc; transform:translateX(3px); }
+  .article-item.has-change { border-left-color:#d4af37; }
+  .article-item .title { font-weight:bold; color:#0a2540; margin-bottom:4px; }
+  .article-item .desc { font-size:12px; color:#888; }
+  
+  /* 案例 */
+  .case-card { background:#fff; padding:25px; border-radius:12px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+  .case-title { font-size:17px; font-weight:bold; color:#0a2540; margin-bottom:10px; display:flex; align-items:center; gap:10px; }
+  .case-scene { background:#f8fafc; padding:15px; border-radius:8px; margin:15px 0; line-height:1.8; font-size:14px; }
+  
+  /* 错题本 */
+  .wrong-empty { text-align:center; padding:60px 20px; color:#888; }
+  .wrong-empty .icon { font-size:60px; margin-bottom:15px; }
+  
+  /* 排行榜 */
+  .rank-table { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+  .rank-row { display:grid; grid-template-columns:80px 1fr 150px 120px; padding:15px 20px; border-bottom:1px solid #f0f0f0; align-items:center; }
+  .rank-row.header { background:#0a2540; color:#fff; font-weight:bold; }
+  .rank-row:not(.header):hover { background:#f8fafc; }
+  .rank-num { font-size:20px; font-weight:bold; text-align:center; }
+  .rank-num.top1 { color:#d4af37; }
+  .rank-num.top2 { color:#95a5a6; }
+  .rank-num.top3 { color:#cd7f32; }
+  .rank-user { display:flex; align-items:center; gap:12px; }
+  .avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#1e3a5f,#d4af37); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; }
+  
+  /* 成就 */
+  .badges-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:15px; }
+  .badge { background:#fff; padding:20px; border-radius:12px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.06); transition:all 0.3s; }
+  .badge.locked { opacity:0.4; filter:grayscale(1); }
+  .badge:not(.locked):hover { transform:translateY(-5px); }
+  .badge-icon { font-size:40px; margin-bottom:8px; }
+  .badge-name { font-size:13px; font-weight:bold; color:#0a2540; }
+  .badge-desc { font-size:11px; color:#888; margin-top:4px; }
+  
+  /* 弹窗 */
+  .modal-mask { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+  .modal-mask.show { display:flex; }
+  .modal { background:#fff; padding:30px; border-radius:15px; max-width:400px; width:90%; text-align:center; animation:popIn 0.3s; }
+  @keyframes popIn { from{transform:scale(0.8); opacity:0;} to{transform:scale(1); opacity:1;} }
+  .modal h2 { color:#0a2540; margin-bottom:15px; }
+  .modal .big-icon { font-size:70px; margin-bottom:15px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">⚖</div>
+      <div>蓝盾学堂 <span style="font-size:12px; opacity:0.7; font-weight:normal;">新《监狱法》学习平台</span></div>
+    </div>
+    <div class="nav">
+      <button class="nav-btn active" data-page="home">🏠 首页</button>
+      <button class="nav-btn" data-page="quiz">🎯 问答闯关</button>
+      <button class="nav-btn" data-page="compare">📊 新旧对比</button>
+      <button class="nav-btn" data-page="case">📚 案例情景</button>
+      <button class="nav-btn" data-page="wrong">❌ 错题本</button>
+      <button class="nav-btn" data-page="rank">🏆 排行榜</button>
+    </div>
+    <div class="user-info">
+      <span>张警官</span>
+      <span class="score-badge">⭐ <span id="userScore">0</span> 分</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 首页 -->
+  <div class="page active" id="page-home">
+    <div class="welcome-banner">
+      <h1>👋 欢迎回来，张警官！</h1>
+      <p>今天是 2026年10月17日，坚持每日学习，执法更规范～</p>
+      <button class="checkin-btn" id="checkinBtn" onclick="checkin()">📅 每日打卡 (+10分)</button>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">📖 已学条文</div>
+        <div class="value">42 <span style="font-size:14px; color:#888;">/ 98</span></div>
+        <div class="sub">完成 43%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">✅ 答题正确率</div>
+        <div class="value">87%</div>
+        <div class="sub">共答 156 题</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">🔥 连续打卡</div>
+        <div class="value">7 天</div>
+        <div class="sub">再坚持3天获得徽章</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">🏅 当前排名</div>
+        <div class="value">第 8 名</div>
+        <div class="sub">全监区 128 人</div>
+      </div>
+    </div>
+    
+    <h2 style="margin-bottom:15px; color:#0a2540;">📌 快捷入口</h2>
+    <div class="module-grid">
+      <div class="module-card" onclick="switchPage('quiz')">
+        <div class="module-icon">🎯</div>
+        <h3>问答闯关</h3>
+        <p>通过选择题、判断题巩固新法知识，答对得分，连对有额外奖励！</p>
+      </div>
+      <div class="module-card" onclick="switchPage('compare')">
+        <div class="module-icon">📊</div>
+        <h3>新旧对比</h3>
+        <p>直观对照新旧《监狱法》条文，变化一目了然，重点清晰标注。</p>
+      </div>
+      <div class="module-card" onclick="switchPage('case')">
+        <div class="module-icon">📚</div>
+        <h3>案例情景</h3>
+        <p>真实执法场景模拟，学以致用，提升实际应用能力。</p>
+      </div>
+      <div class="module-card" onclick="switchPage('wrong')">
+        <div class="module-icon">❌</div>
+        <h3>错题本</h3>
+        <p>自动收集错题，支持重做，查漏补缺，不留死角。</p>
+      </div>
+      <div class="module-card" onclick="switchPage('rank')">
+        <div class="module-icon">🏆</div>
+        <h3>排行榜</h3>
+        <p>查看个人与监区排名，争当学习标兵！</p>
+      </div>
+      <div class="module-card" onclick="alert('🔊 语音播报功能开发中...')">
+        <div class="module-icon">🔊</div>
+        <h3>听法学法</h3>
+        <p>执勤时也能"听"法，条文语音播报，解放双眼。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 问答闯关 -->
+  <div class="page" id="page-quiz">
+    <div class="quiz-header">
+      <div class="quiz-info">
+        <div class="quiz-info-item">📝 题号：<span class="num" id="qNum">1</span> / <span id="qTotal">5</span></div>
+        <div class="quiz-info-item">⭐ 得分：<span class="num" id="qScore">0</span></div>
+        <div class="quiz-info-item">🔥 连击：<span class="num" id="qCombo">0</span></div>
+        <div class="quiz-info-item">⏱️ 用时：<span class="num" id="qTime">0</span>s</div>
+      </div>
+      <button class="btn btn-primary" onclick="resetQuiz()">🔄 重新开始</button>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-progress"><div class="quiz-progress-bar" id="qBar" style="width:20%"></div></div>
+      <div id="quizBody"></div>
+    </div>
+  </div>
+
+  <!-- 新旧对比 -->
+  <div class="page" id="page-compare">
+    <div class="compare-controls">
+      <select id="chapterFilter" onchange="filterArticles()">
+        <option value="">全部章节</option>
+        <option value="1">第一章 总则</option>
+        <option value="2">第二章 监狱</option>
+        <option value="3">第三章 刑罚执行</option>
+        <option value="4">第四章 狱政管理</option>
+        <option value="5">第五章 教育改造</option>
+      </select>
+      <select id="changeFilter" onchange="filterArticles()">
+        <option value="">全部变化</option>
+        <option value="add">仅看新增</option>
+        <option value="mod">仅看修改</option>
+        <option value="del">仅看删除</option>
+      </select>
+      <input type="text" id="searchInput" placeholder="🔍 输入关键字搜索条文..." oninput="filterArticles()">
+    </div>
+    
+    <div class="article-list" id="articleList"></div>
+    
+    <div class="compare-container" id="compareView" style="display:none;">
+      <div class="compare-panel old">
+        <h3>📜 旧《监狱法》（1994年版）</h3>
+        <div class="compare-content" id="oldContent"></div>
+      </div>
+      <div class="compare-panel new">
+        <h3>🆕 新《监狱法》（2025修订版）<span class="change-tag tag-mod" id="changeTag">修改</span></h3>
+        <div class="compare-content" id="newContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 案例情景 -->
+  <div class="page" id="page-case">
+    <h2 style="margin-bottom:15px; color:#0a2540;">📚 执法情景案例</h2>
+    <div id="caseList"></div>
+  </div>
+
+  <!-- 错题本 -->
+  <div class="page" id="page-wrong">
+    <h2 style="margin-bottom:15px; color:#0a2540;">❌ 我的错题本</h2>
+    <div id="wrongList"></div>
+  </div>
+
+  <!-- 排行榜 -->
+  <div class="page" id="page-rank">
+    <h2 style="margin-bottom:15px; color:#0a2540;">🏆 学习排行榜</h2>
+    <div class="rank-table">
+      <div class="rank-row header">
+        <div>排名</div><div>干警</div><div>监区</div><div>积分</div>
+      </div>
+      <div id="rankBody"></div>
+    </div>
+    
+    <h2 style="margin:30px 0 15px; color:#0a2540;">🎖️ 成就徽章</h2>
+    <div class="badges-grid" id="badgesGrid"></div>
+  </div>
+
+</div>
+
+<!-- 弹窗 -->
+<div class="modal-mask" id="modal">
+  <div class="modal">
+    <div class="big-icon" id="modalIcon">🎉</div>
+    <h2 id="modalTitle">恭喜！</h2>
+    <p id="modalMsg" style="color:#666; margin-bottom:20px;"></p>
+    <button class="btn btn-gold" onclick="closeModal()">确定</button>
+  </div>
+</div>
+
+<script>
+// ============ 数据 ============
+const quizData = [
+  {
+    type:'单选题', chapter:'第三章',
+    q:'根据新修订的《监狱法》，罪犯减刑、假释的提请主体是？',
+    options:['监狱','人民法院','人民检察院','公安机关'],
+    answer:0,
+    explain:'新法第32条明确：减刑、假释由监狱提出建议书，报请人民法院审核裁定。'
+  },
+  {
+    type:'多选题', chapter:'第四章',
+    q:'新《监狱法》规定，监狱应当保障罪犯的哪些权利？',
+    options:['申诉权','通信会见权','劳动报酬权','人格尊严权'],
+    answer:[0,1,2,3],
+    explain:'新法强化罪犯权利保障，上述四项均在新法中有明确规定（第7、18、69、73条）。'
+  },
+  {
+    type:'判断题', chapter:'第一章',
+    q:'新《监狱法》首次明确"惩罚与改造相结合，以改造人为宗旨"的原则。',
+    options:['正确','错误'],
+    answer:0,
+    explain:'新法第3条保留并强化该原则，同时新增"尊重和保障人权"的表述。'
+  },
+  {
+    type:'单选题', chapter:'第五章',
+    q:'新法规定，罪犯劳动时间每日不得超过多少小时？',
+    options:['6小时','8小时','10小时','12小时'],
+    answer:1,
+    explain:'新法第69条明确罪犯每日劳动时间不超过8小时，每周至少休息1天。'
+  },
+  {
+    type:'单选题', chapter:'第二章',
+    q:'新《监狱法》新增的监狱工作方针中，强调的核心是？',
+    options:['严格管理','法治化、规范化','生产效益','安全优先'],
+    answer:1,
+    explain:'新法第2条新增"坚持法治化、规范化"，体现新时代监狱工作新要求。'
+  }
+];
+
+const articles = [
+  { id:'3', chapter:1, title:'第三条 监狱工作方针', change:'mod',
+    old:'监狱对罪犯实行惩罚和改造相结合、教育和劳动相结合的原则，将罪犯改造成为守法公民。',
+    new:'监狱对罪犯实行<span class="highlight-mod">惩罚和改造相结合、教育和劳动相结合</span>的原则，<span class="highlight-add">坚持尊重和保障人权</span>，将罪犯改造成为守法公民。<span class="highlight-add">监狱工作应当坚持法治化、规范化，运用现代科技手段提升管理效能。</span>' },
+  { id:'7', chapter:1, title:'第七条 罪犯权利保障', change:'add',
+    old:'（原无此条）',
+    new:'<span class="highlight-add">罪犯的人格尊严、人身安全、合法财产、辩护、申诉、控告、检举以及其他未被依法剥夺或限制的权利不受侵犯。</span>' },
+  { id:'32', chapter:3, title:'第三十二条 减刑假释程序', change:'mod',
+    old:'被判处管制、拘役、有期徒刑、无期徒刑的罪犯，在执行期间确有悔改或者立功表现，应当依法予以减刑、假释的时候，由执行机关提出建议书，报请人民法院审核裁定。',
+    new:'被判处管制、拘役、有期徒刑、无期徒刑的罪犯，在执行期间确有悔改或者立功表现，应当依法予以减刑、假释的时候，由<span class="highlight-mod">监狱</span>提出建议书，报请人民法院审核裁定。<span class="highlight-add">人民法院应当组成合议庭审理，并在收到建议书后一个月内作出裁定；案情复杂的，可以延长一个月。人民检察院应当对减刑、假释实行全程监督。</span>' },
+  { id:'69', chapter:4, title:'第六十九条 劳动时间', change:'mod',
+    old:'监狱应当组织罪犯参加生产劳动。',
+    new:'监狱应当组织罪犯参加生产劳动。<span class="highlight-add">罪犯每日劳动时间不超过八小时，平均每周至少休息一日。劳动保护、劳动报酬按照国家有关规定执行。</span>' },
+  { id:'88', chapter:5, title:'第八十八条 教育改造', change:'add',
+    old:'（原无此条）',
+    new:'<span class="highlight-add">监狱应当运用信息化、智能化手段开展教育改造，鼓励罪犯通过远程教育、网络学习等途径提升文化素质和职业技能。</span>' }
+];
+
+const cases = [
+  {
+    title:'📋 情景一：罪犯张某申请减刑',
+    scene:'罪犯张某服刑3年，确有悔改表现，监区拟为其提请减刑。请问作为管教干警，你应当如何操作？',
+    options:['直接报送法院裁定','由监狱提出建议书，报请法院裁定','由检察院直接决定','由罪犯本人向法院申请'],
+    answer:1,
+    explain:'依据新法第32条，减刑由监狱提出建议书，报请人民法院审核裁定，检察院实行全程监督。'
+  },
+  {
+    title:'📋 情景二：罪犯李某投诉劳动时间',
+    scene:'罪犯李某反映所在监区要求其每日劳动10小时，周末无休。作为值班干警，你应当如何处理？',
+    options:['告知其监狱规定如此','记录情况并上报，核查是否违反新法第69条','不予理睬','让其自行找领导反映'],
+    answer:1,
+    explain:'新法第69条明确罪犯每日劳动不超过8小时，每周至少休息1日。干警应当依法核查并纠正违法行为。'
+  }
+];
+
+const ranks = [
+  {name:'王建国', unit:'一监区', score:2680},
+  {name:'李红梅', unit:'二监区', score:2540},
+  {name:'陈志强', unit:'三监区', score:2390},
+  {name:'刘芳', unit:'一监区', score:2210},
+  {name:'赵伟', unit:'四监区', score:2080},
+  {name:'张警官（你）', unit:'二监区', score:1950, isMe:true},
+  {name:'孙丽', unit:'三监区', score:1820},
+  {name:'周强', unit:'五监区', score:1760}
+];
+
+const badges = [
+  {icon:'🔥', name:'初露锋芒', desc:'完成首次答题', unlocked:true},
+  {icon:'⭐', name:'连击达人', desc:'连续答对10题', unlocked:true},
+  {icon:'📚', name:'勤学苦练', desc:'累计学习30天', unlocked:true},
+  {icon:'🏅', name:'条文通', desc:'掌握50条新法', unlocked:false},
+  {icon:'👑', name:'学习标兵', desc:'进入全监前10', unlocked:true},
+  {icon:'💎', name:'满分王者', desc:'单轮全对', unlocked:false},
+  {icon:'🎯', name:'案例高手', desc:'完成10个案例', unlocked:false},
+  {icon:'🌟', name:'全能干警', desc:'解锁全部徽章', unlocked:false}
+];
+
+// ============ 状态 ============
+let state = {
+  score: 0,
+  combo: 0,
+  qIndex: 0,
+  qScore: 0,
+  qTime: 0,
+  timer: null,
+  answered: false,
+  wrongList: JSON.parse(localStorage.getItem('wrongList')||'[]'),
+  selected: []
+};
+
+// ============ 导航 ============
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.onclick = ()=> switchPage(btn.dataset.page);
+});
+function switchPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelector(`.nav-btn[data-page="${page}"]`).classList.add('active');
+  if(page==='quiz') startQuiz();
+  if(page==='compare') renderArticles();
+  if(page==='case') renderCases();
+  if(page==='wrong') renderWrong();
+  if(page==='rank') renderRank();
+}
+
+// ============ 打卡 ============
+function checkin(){
+  const today = new Date().toDateString();
+  if(localStorage.getItem('lastCheckin')===today){
+    showModal('✅','今日已打卡','明天再来吧～'); return;
+  }
+  localStorage.setItem('lastCheckin',today);
+  state.score += 10;
+  updateScore();
+  document.getElementById('checkinBtn').disabled = true;
+  document.getElementById('checkinBtn').textContent = '✅ 今日已打卡';
+  showModal('🎉','打卡成功！','积分 +10，继续保持！');
+}
+
+// ============ 问答 ============
+function startQuiz(){
+  state.qIndex = 0; state.qScore = 0; state.combo = 0; state.qTime = 0;
+  document.getElementById('qTotal').textContent = quizData.length;
+  clearInterval(state.timer);
+  state.timer = setInterval(()=>{
+    state.qTime++;
+    document.getElementById('qTime').textContent = state.qTime;
+  },1000);
+  renderQuestion();
+}
+function resetQuiz(){ startQuiz(); }
+
+function renderQuestion(){
+  if(state.qIndex >= quizData.length){
+    finishQuiz(); return;
+  }
+  const q = quizData[state.qIndex];
+  state.answered = false;
+  state.selected = [];
+  document.getElementById('qNum').textContent = state.qIndex+1;
+  document.getElementById('qScore').textContent = state.qScore;
+  document.getElementById('qCombo').textContent = state.combo;
+  document.getElementById('qBar').style.width = ((state.qIndex+1)/quizData.length*100)+'%';
+  
+  const isMulti = Array.isArray(q.answer);
+  const typeLabel = isMulti ? '多选题' : (q.options.length===2 && q.options[0]==='正确' ? '判断题' : '单选题');
+  
+  let html = `<span class="quiz-tag">${q.type} · ${q.chapter}</span>
+    <div class="quiz-question">${q.q}</div>
+    <div class="options">`;
+  q.options.forEach((opt,i)=>{
+    const letter = String.fromCharCode(65+i);
+    html += `<div class="option" data-i="${i}" onclick="selectOption(${i})">
+      <div class="option-letter">${letter}</div>
+      <div>${opt}</div>
+    </div>`;
+  });
+  html += `</div>
+    <div class="explanation" id="explain"></div>
+    <div class="quiz-actions">
+      <button class="btn btn-gold" id="submitBtn" onclick="submitAnswer()" ${isMulti?'':'style="display:none"'}>提交答案</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display:none">下一题 →</button>
+    </div>`;
+  document.getElementById('quizBody').innerHTML = html;
+  
+  // 单选题点击即提交
+  if(!isMulti){
+    document.getElementById('submitBtn').style.display='none';
+  }
+}
+
+function selectOption(i){
+  if(state.answered) return;
+  const q = quizData[state.qIndex];
+  const isMulti = Array.isArray(q.answer);
+  const el = document.querySelector(`.option[data-i="${i}"]`);
+  
+  if(isMulti){
+    if(state.selected.includes(i)){
+      state.selected = state.selected.filter(x=>x!==i);
+      el.classList.remove('selected');
+    } else {
+      state.selected.push(i);
+      el.classList.add('selected');
+    }
+  } else {
+    document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+    el.classList.add('selected');
+    state.selected = [i];
+    submitAnswer();
+  }
+}
+
+function submitAnswer(){
+  if(state.answered) return;
+  if(state.selected.length===0){ alert('请先选择答案'); return; }
+  state.answered = true;
+  const q = quizData[state.qIndex];
+  const isMulti = Array.isArray(q.answer);
+  let correct;
+  if(isMulti){
+    correct = state.selected.length===q.answer.length && state.selected.every(x=>q.answer.includes(x));
+  } else {
+    correct = state.selected[0]===q.answer;
+  }
+  
+  document.querySelectorAll('.option').forEach((el,i)=>{
+    if(isMulti){
+      if(q.answer.includes(i)) el.classList.add('correct');
+      else if(state.selected.includes(i)) el.classList.add('wrong');
+    } else {
+      if(i===q.answer) el.classList.add('correct');
+      else if(state.selected.includes(i)) el.classList.add('wrong');
+    }
+  });
+  
+  const expEl = document.getElementById('explain');
+  if(correct){
+    state.combo++;
+    const bonus = state.combo>=3 ? 5 : 0;
+    const gained = 10 + bonus;
+    state.qScore += gained;
+    state.score += gained;
+    updateScore();
+    expEl.innerHTML = `<strong>✅ 回答正确！+${gained}分</strong>${bonus?'（连击奖励 +5）':''}<br>${q.explain}`;
+  } else {
+    state.combo = 0;
+    state.wrongList.push({q:q.q, yourAnswer:state.selected.map(i=>q.options[i]).join('、'), correct:isMulti?q.answer.map(i=>q.options[i]).join('、'):q.options[q.answer], explain:q.explain, time:new Date().toLocaleString()});
+    localStorage.setItem('wrongList', JSON.stringify(state.wrongList));
+    expEl.innerHTML = `<strong>❌ 回答错误</strong><br>正确答案：${isMulti?q.answer.map(i=>q.options[i]).join('、'):q.options[q.answer]}<br>${q.explain}`;
+  }
+  expEl.classList.add('show');
+  document.getElementById('nextBtn').style.display = 'inline-block';
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('qScore').textContent = state.qScore;
+  document.getElementById('qCombo').textContent = state.combo;
+}
+
+function nextQuestion(){
+  state.qIndex++;
+  renderQuestion();
+}
+
+function finishQuiz(){
+  clearInterval(state.timer);
+  const rate = Math.round(state.qScore / (quizData.length*10) * 100);
+  showModal('🏁','闯关完成！',`本轮得分：${state.qScore} 分，用时 ${state.qTime} 秒<br>正确率约 ${rate}%`);
+}
+
+// ============ 新旧对比 ============
+function renderArticles(){
+  const chapter = document.getElementById('chapterFilter').value;
+  const change = document.getElementById('changeFilter').value;
+  const kw = document.getElementById('searchInput').value.trim();
+  
+  let list = articles.filter(a=>{
+    if(chapter && a.chapter!=chapter) return false;
+    if(change && a.change!==change) return false;
+    if(kw && !a.title.includes(kw) && !a.old.includes(kw) && !a.new.includes(kw)) return false;
+    return true;
+  });
+  
+  const changeMap = {add:'🆕 新增', mod:'✏️ 修改', del:'🗑️ 删除'};
+  const html = list.map(a=>`
+    <div class="article-item has-change" onclick="showArticle('${a.id}')">
+      <div class="title">第${a.id}条 ${a.title} <span class="change-tag tag-${a.change}">${changeMap[a.change]}</span></div>
+      <div class="desc">第${a.chapter}章 · 点击查看详情对比</div>
+    </div>
+  `).join('');
+  document.getElementById('articleList').innerHTML = html || '<div style="padding:20px; text-align:center; color:#888;">暂无匹配条文</div>';
+}
+function filterArticles(){ renderArticles(); }
+
+function showArticle(id){
+  const a = articles.find(x=>x.id===id);
+  if(!a) return;
+  document.getElementById('compareView').style.display = 'grid';
+  const changeMap = {add:['新增','tag-add'], mod:['修改','tag-mod'], del:['删除','tag-del']};
+  document.getElementById('oldContent').innerHTML = `<p>${a.old}</p>`;
+  document.getElementById('newContent').innerHTML = `<p>${a.new}</p>`;
+  const tag = document.getElementById('changeTag');
+  tag.textContent = changeMap[a.change][0];
+  tag.className = 'change-tag ' + changeMap[a.change][1];
+  document.getElementById('compareView').scrollIntoView({behavior:'smooth'});
+}
+
+// ============ 案例 ============
+function renderCases(){
+  const html = cases.map((c,idx)=>`
+    <div class="case-card">
+      <div class="case-title">${c.title}</div>
+      <div class="case-scene">${c.scene}</div>
+      <div class="options" id="caseOpts${idx}">
+        ${c.options.map((o,i)=>`<div class="option" data-i="${i}" onclick="answerCase(${idx},${i})">
+          <div class="option-letter">${String.fromCharCode(65+i)}</div><div>${o}</div>
+        </div>`).join('')}
+      </div>
+      <div class="explanation" id="caseExp${idx}"></div>
+    </div>
+  `).join('');
+  document.getElementById('caseList').innerHTML = html;
+}
+function answerCase(idx,i){
+  const c = cases[idx];
+  const opts = document.querySelectorAll(`#caseOpts${idx} .option`);
+  if(opts[0].classList.contains('correct')||opts[0].classList.contains('wrong')) return;
+  opts.forEach((o,j)=>{
+    if(j===c.answer) o.classList.add('correct');
+    else if(j===i) o.classList.add('wrong');
+  });
+  const exp = document.getElementById(`caseExp${idx}`);
+  exp.innerHTML = `<strong>${i===c.answer?'✅ 处理正确！':'❌ 处理不当'}</strong><br>${c.explain}`;
+  exp.classList.add('show');
+  if(i===c.answer){ state.score += 15; updateScore(); }
+}
+
+// ============ 错题本 ============
+function renderWrong(){
+  if(state.wrongList.length===0){
+    document.getElementById('wrongList').innerHTML = `
+      <div class="wrong-empty">
+        <div class="icon">🎉</div>
+        <h3>暂无错题</h3>
+        <p style="margin-top:10px;">继续保持，争取零错题！</p>
+        <button class="btn btn-gold" style="margin-top:20px;" onclick="switchPage('quiz')">去答题</button>
+      </div>`;
+    return;
+  }
+  const html = state.wrongList.map((w,i)=>`
+    <div class="case-card">
+      <div class="case-title">❓ ${w.q}</div>
+      <div class="case-scene">
+        <div><strong>你的答案：</strong><span style="color:#e74c3c;">${w.yourAnswer}</span></div>
+        <div><strong>正确答案：</strong><span style="color:#2ecc71;">${w.correct}</span></div>
+        <div style="margin-top:10px;"><strong>解析：</strong>${w.explain}</div>
+        <div style="margin-top:8px; font-size:12px; color:#888;">错误时间：${w.time}</div>
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-primary" onclick="removeWrong(${i})">🗑️ 移除</button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('wrongList').innerHTML = html + `
+    <div style="text-align:center; margin-top:20px;">
+      <button class="btn btn-gold" onclick="clearWrong()">🧹 清空错题本</button>
+    </div>`;
+}
+function removeWrong(i){
+  state.wrongList.splice(i,1);
+  localStorage.setItem('wrongList', JSON.stringify(state.wrongList));
+  renderWrong();
+}
+function clearWrong(){
+  if(confirm('确定清空所有错题？')){
+    state.wrongList = [];
+    localStorage.setItem('wrongList','[]');
+    renderWrong();
+  }
+}
+
+// ============ 排行榜 ============
+function renderRank(){
+  const sorted = [...ranks].sort((a,b)=>b.score-a.score);
+  const html = sorted.map((r,i)=>`
+    <div class="rank-row" style="${r.isMe?'background:#fff8e1;':''}">
+      <div class="rank-num ${i<3?'top'+(i+1):''}">${i<3?['🥇','🥈','🥉'][i]:(i+1)}</div>
+      <div class="rank-user">
+        <div class="avatar">${r.name[0]}</div>
+        <div>${r.name}${r.isMe?' <span style="color:#d4af37;">（我）</span>':''}</div>
+      </div>
+      <div>${r.unit}</div>
+      <div style="font-weight:bold; color:#d4af37;">${r.score}</div>
+    </div>
+  `).join('');
+  document.getElementById('rankBody').innerHTML = html;
+  
+  const bhtml = badges.map(b=>`
+    <div class="badge ${b.unlocked?'':'locked'}">
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+    </div>
+  `).join('');
+  document.getElementById('badgesGrid').innerHTML = bhtml;
+}
+
+// ============ 工具 ============
+function updateScore(){
+  document.getElementById('userScore').textContent = state.score;
+  // 同步到排行榜中的"我"
+  const me = ranks.find(r=>r.isMe);
+  if(me) me.score = 1950 + state.score;
+}
+function showModal(icon,title,msg){
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalMsg').innerHTML = msg;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+}
+
+// 初始化
+updateScore();
+</script>
+</body>
+</html>

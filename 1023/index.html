@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>我们的五周年 💌</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            love: '#e86384',
+            loveLight: '#ffe8ed'
+          },
+          fontFamily: {
+            song: ['"Noto Serif SC"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .heart-animate {
+        animation: beat 1.2s infinite;
+      }
+      .fade-in {
+        animation: fadeIn 1s ease-in-out;
+      }
+      .timeline-line {
+        @apply absolute left-[19px] top-0 h-full w-[2px] bg-love/30;
+      }
+    }
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background: linear-gradient(135deg, #fff5f7 0%, #ffeef3 100%);
+    }
+  </style>
+</head>
+<body class="font-song text-gray-700 min-h-screen">
+  <!-- 顶部封面 -->
+  <header class="min-h-screen flex flex-col justify-center items-center px-6 relative">
+    <div class="text-center fade-in">
+      <i class="fa fa-heart text-love text-6xl heart-animate"></i>
+      <h1 class="text-[clamp(2rem,6vw,4rem)] mt-6 font-bold text-love">五周年快乐</h1>
+      <p class="mt-4 text-lg md:text-xl text-gray-600">从相遇，到第五个春夏秋冬</p>
+      <p class="mt-2">始于 · 2021.10.23</p>
+      <div id="countdown" class="mt-8 text-xl"></div>
+      <a href="#story" class="inline-block mt-10 px-6 py-2 rounded-full border border-love text-love hover:bg-love hover:text-white transition-all">
+        往下翻看我们的故事
+      </a>
+    </div>
+  </header>
+
+  <!-- 时间轴部分 -->
+  <section id="story" class="max-w-3xl mx-auto px-6 py-20">
+    <h2 class="text-3xl text-center text-love font-bold mb-16">💫 点点滴滴</h2>
+    <div class="relative">
+      <div class="timeline-line"></div>
+
+
+      <div class="relative pl-12 mb-12 fade-in">
+        <div class="absolute left-0 w-10 h-10 rounded-full bg-loveLight border-2 border-love flex items-center justify-center">
+          <i class="fa fa-star text-love"></i>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-md">
+          <h3 class="font-bold text-love">初见</h3>
+          <p class="text-sm text-gray-500">2021.10.23</p>
+          <p class="mt-2">在烤肉店吃烧烤，牵起你的手~</p>
+          <img src="imgs/img1.jpg" alt="照片" class="mt-3 rounded-lg max-h-72 object-cover hidden">
+        </div>
+      </div>
+
+      <div class="relative pl-12 mb-12 fade-in">
+        <div class="absolute left-0 w-10 h-10 rounded-full bg-loveLight border-2 border-love flex items-center justify-center">
+          <i class="fa fa-gift text-love"></i>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-md">
+          <h3 class="font-bold text-love">一起diy戒指</h3>
+          <p class="text-sm text-gray-500">2023.04.30</p>
+          <p class="mt-2">一起制作属于我们的戒指~</p>
+          <img src="imgs/img2.jpg" alt="照片" class="mt-3 rounded-lg max-h-72 object-cover hidden">
+        </div>
+      </div>
+
+
+      <div class="relative pl-12 mb-12 fade-in">
+        <div class="absolute left-0 w-10 h-10 rounded-full bg-loveLight border-2 border-love flex items-center justify-center">
+          <i class="fa fa-plane text-love"></i>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-md">
+          <h3 class="font-bold text-love">澳门之旅</h3>
+          <p class="text-sm text-gray-500">2024.05.24</p>
+          <p class="mt-2">没满21，进不去赌场</p>
+          <img src="imgs/img3.jpg" alt="照片" class="mt-3 rounded-lg max-h-72 object-cover hidden">
+        </div>
+      </div>
+
+      <div class="relative pl-12 mb-12 fade-in">
+        <div class="absolute left-0 w-10 h-10 rounded-full bg-loveLight border-2 border-love flex items-center justify-center">
+          <i class="fa fa-plane text-love"></i>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-md">
+          <h3 class="font-bold text-love">迪士尼之旅</h3>
+          <p class="text-sm text-gray-500">2024.06.18</p>
+          <p class="mt-2">一起享受童年</p>
+          <img src="imgs/img4.jpg" alt="照片" class="mt-3 rounded-lg max-h-72 object-cover hidden">
+        </div>
+      </div>
+
+      <div class="relative pl-12 mb-12 fade-in">
+        <div class="absolute left-0 w-10 h-10 rounded-full bg-loveLight border-2 border-love flex items-center justify-center">
+          <i class="fa fa-plane text-love"></i>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-md">
+          <h3 class="font-bold text-love">广西之旅</h3>
+          <p class="text-sm text-gray-500">2024.07.20</p>
+          <p class="mt-2">一起兼职赚钱去旅游</p>
+          <img src="imgs/img5.jpg" alt="照片" class="mt-3 rounded-lg max-h-72 object-cover hidden">
+        </div>
+      </div>
+
+      <div class="relative pl-12 mb-12 fade-in">
+        <div class="absolute left-0 w-10 h-10 rounded-full bg-loveLight border-2 border-love flex items-center justify-center">
+          <i class="fa fa-calendar text-love"></i>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-md">
+          <h3 class="font-bold text-love">五周年 · 今天</h3>
+          <p class="text-sm text-gray-500">2026.10.23</p>
+          <p class="mt-2">写给TA的话：<br>谢谢你陪我走过五年，往后还有很多很多年，想和你一起慢慢走。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 相册模块 -->
+  <section class="max-w-4xl mx-auto px-6 py-16">
+    <h2 class="text-3xl text-center text-love font-bold mb-10">📸 相册</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <!-- 全部替换成你的图床链接，不需要上传图片到github仓库 -->
+      <div class="aspect-square bg-white rounded-xl overflow-hidden shadow">
+        <img src="imgs/bbt.jpg" class="w-full h-full object-cover hidden" alt="合照">
+      </div>
+      <div class="aspect-square bg-white rounded-xl overflow-hidden shadow">
+        <img src="imgs/xrk.jpg" class="w-full h-full object-cover hidden" alt="合照">
+      </div>
+      <div class="aspect-square bg-white rounded-xl overflow-hidden shadow">
+        <img src="imgs/cake.jpg" class="w-full h-full object-cover hidden" alt="合照">
+      </div>
+    </div>
+  </section>
+
+  <!-- 结尾寄语 -->
+  <section class="py-20 text-center px-6">
+    <div class="max-w-xl mx-auto bg-white/70 p-8 rounded-2xl shadow">
+      <i class="fa fa-heart text-love text-4xl"></i>
+      <p class="mt-6 text-lg">岁岁年年，朝朝暮暮<br>下一个五年，我们还要在一起</p>
+    </div>
+  </section>
+
+  <footer class="py-8 text-center text-sm text-gray-500">
+    Made with love 💖
+  </footer>
+
+  <script>
+    // ========= 倒计时：修改这里的日期为你们纪念日 =========
+    const anniversary = new Date("2026-10-23 00:00:00");
+    function updateCountdown() {
+      const now = new Date();
+      const diff = anniversary - now;
+      if (diff <= 0) {
+        document.getElementById('countdown').innerText = '✨ 纪念日已到！五周年快乐 ✨';
+        return;
+      }
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+      document.getElementById('countdown').innerText = `距离五周年：${d}天 ${h}时 ${m}分 ${s}秒`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // 滚动渐入动画
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(item => {
+        if (item.isIntersecting) item.target.classList.add('fade-in');
+      })
+    }, { threshold: 0.15 })
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el))
+  </script>
+</body>
+</html>
